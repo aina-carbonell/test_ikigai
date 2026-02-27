@@ -72,7 +72,7 @@
 
     /* ===== INTRO SCREEN ===== */
     #intro {
-      display: flex;
+      /* display controlled by .screen/.screen.active — do NOT set display:flex here */
       flex-direction: column;
       align-items: center;
       justify-content: center;
@@ -80,6 +80,9 @@
       padding: 3rem 2rem;
       text-align: center;
       position: relative;
+    }
+    #intro.active {
+      display: flex;
     }
 
     .intro-deco {
@@ -435,14 +438,18 @@
 
     /* ===== RESULTS SCREEN ===== */
     #results {
-      max-width: 900px;
+      padding: 0;
+    }
+
+    .results-inner {
+      max-width: 1200px;
       margin: 0 auto;
       padding: 4rem 2rem 6rem;
     }
 
     .results-header {
       text-align: center;
-      margin-bottom: 4rem;
+      margin-bottom: 3.5rem;
     }
     .results-header .kanji-sm {
       font-family: serif;
@@ -468,15 +475,35 @@
       margin: 0 auto;
     }
 
+    /* Two-column grid */
+    .results-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem 4rem;
+      margin-bottom: 4rem;
+    }
+
+    .results-col-left {
+      display: flex;
+      flex-direction: column;
+      gap: 3rem;
+    }
+
+    .results-col-right {
+      display: flex;
+      flex-direction: column;
+      gap: 3rem;
+    }
+
     /* Venn diagram */
     .venn-section {
-      margin-bottom: 4rem;
+      /* no extra margin — gap handles spacing */
     }
 
     .venn-container {
       position: relative;
       width: 100%;
-      max-width: 520px;
+      max-width: 420px;
       margin: 0 auto;
       aspect-ratio: 1;
     }
@@ -539,7 +566,7 @@
 
     /* Score bars */
     .scores-section {
-      margin-bottom: 4rem;
+      /* gap handles spacing in grid */
     }
     .scores-section h3 {
       font-family: var(--font-serif);
@@ -612,7 +639,7 @@
 
     /* Reflections */
     .reflections-section {
-      margin-bottom: 4rem;
+      /* gap handles spacing in grid */
     }
     .reflections-section h3 {
       font-family: var(--font-serif);
@@ -730,6 +757,14 @@
     }
 
     /* ===== RESPONSIVE ===== */
+    @media (max-width: 860px) {
+      .results-grid {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+      }
+      .venn-container { max-width: 360px; }
+    }
+
     @media (max-width: 600px) {
       .test-header { padding: 1rem; }
       .progress-wrap { display: none; }
@@ -737,9 +772,10 @@
       .likert-btn { width: 44px; height: 44px; font-size: 1rem; }
       .emoji-grid { grid-template-columns: repeat(2, 1fr); }
       .results-header { margin-bottom: 2.5rem; }
-      #results { padding: 2.5rem 1.2rem 4rem; }
+      .results-inner { padding: 2.5rem 1.2rem 4rem; }
       .synthesis-section { padding: 1.8rem 1.4rem; }
       .reflection-card { padding: 1.4rem; }
+      .venn-container { max-width: 280px; }
     }
 
     /* Loading / saved indicator */
@@ -796,77 +832,90 @@
 
 <!-- ===== RESULTS SCREEN ===== -->
 <div id="results" class="screen">
-  <div class="results-header">
-    <span class="kanji-sm">生き甲斐</span>
-    <h2>Your Ikigai Portrait</h2>
-    <p id="results-intro-text">Where your four circles meet, your reason for being quietly waits.</p>
-  </div>
+  <div class="results-inner">
 
-  <div class="venn-section">
-    <div class="venn-container">
-      <svg id="venn-svg" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
-        <!-- Circles rendered by JS -->
-      </svg>
+    <div class="results-header">
+      <span class="kanji-sm">生き甲斐</span>
+      <h2>Your Ikigai Portrait</h2>
+      <p id="results-intro-text">Where your four circles meet, your reason for being quietly waits.</p>
     </div>
-    <div class="venn-tooltip" id="venn-tooltip" data-area=""></div>
-  </div>
 
-  <div class="scores-section">
-    <h3>Your Four Dimensions</h3>
-    <div class="score-row">
-      <div class="score-row-header">
-        <span class="score-row-label">What you love</span>
-        <span class="score-row-pct" id="score-love">—</span>
+    <!-- Two-column grid: left = Venn + scores, right = synthesis + reflections -->
+    <div class="results-grid">
+
+      <div class="results-col-left">
+        <div class="venn-section">
+          <div class="venn-container">
+            <svg id="venn-svg" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+              <!-- Circles rendered by JS -->
+            </svg>
+          </div>
+          <div class="venn-tooltip" id="venn-tooltip" data-area=""></div>
+        </div>
+
+        <div class="scores-section">
+          <h3>Your Four Dimensions</h3>
+          <div class="score-row">
+            <div class="score-row-header">
+              <span class="score-row-label">What you love</span>
+              <span class="score-row-pct" id="score-love">—</span>
+            </div>
+            <div class="score-track"><div class="score-fill love" id="bar-love"></div></div>
+          </div>
+          <div class="score-row">
+            <div class="score-row-header">
+              <span class="score-row-label">What you're good at</span>
+              <span class="score-row-pct" id="score-good">—</span>
+            </div>
+            <div class="score-track"><div class="score-fill good" id="bar-good"></div></div>
+          </div>
+          <div class="score-row">
+            <div class="score-row-header">
+              <span class="score-row-label">What you can be paid for</span>
+              <span class="score-row-pct" id="score-paid">—</span>
+            </div>
+            <div class="score-track"><div class="score-fill paid" id="bar-paid"></div></div>
+          </div>
+          <div class="score-row">
+            <div class="score-row-header">
+              <span class="score-row-label">What the world needs</span>
+              <span class="score-row-pct" id="score-world">—</span>
+            </div>
+            <div class="score-track"><div class="score-fill world" id="bar-world"></div></div>
+          </div>
+        </div>
+      </div><!-- /col-left -->
+
+      <div class="results-col-right">
+        <div class="synthesis-section">
+          <h3>Your synthesis</h3>
+          <p class="synthesis-text" id="synthesis-text">Calculating your path...</p>
+        </div>
+
+        <div class="reflections-section">
+          <h3>Reflections by dimension</h3>
+          <div id="reflections-container"></div>
+        </div>
+      </div><!-- /col-right -->
+
+    </div><!-- /results-grid -->
+
+    <div class="share-section">
+      <h3>Share your discovery</h3>
+      <p>Invite others to find their own Ikigai</p>
+      <textarea class="share-message" id="share-msg">I just discovered my Ikigai — the Japanese concept of finding your reason for being. Where what you love, what you're good at, what the world needs, and what you can be paid for converge. Try this reflection for yourself:</textarea>
+      <div class="share-buttons">
+        <button class="btn-share twitter"   onclick="shareOn('twitter')">Twitter / X</button>
+        <button class="btn-share linkedin"  onclick="shareOn('linkedin')">LinkedIn</button>
+        <button class="btn-share facebook"  onclick="shareOn('facebook')">Facebook</button>
+        <button class="btn-share instagram" onclick="shareOn('instagram')">Instagram</button>
+        <button class="btn-share tiktok"    onclick="shareOn('tiktok')">TikTok</button>
+        <button class="btn-share restart"   onclick="restartTest()">Start over</button>
       </div>
-      <div class="score-track"><div class="score-fill love" id="bar-love"></div></div>
+      <p class="share-note">Instagram &amp; TikTok don't support direct URL sharing — clicking will copy your message to clipboard so you can paste it into your post or story.</p>
     </div>
-    <div class="score-row">
-      <div class="score-row-header">
-        <span class="score-row-label">What you're good at</span>
-        <span class="score-row-pct" id="score-good">—</span>
-      </div>
-      <div class="score-track"><div class="score-fill good" id="bar-good"></div></div>
-    </div>
-    <div class="score-row">
-      <div class="score-row-header">
-        <span class="score-row-label">What you can be paid for</span>
-        <span class="score-row-pct" id="score-paid">—</span>
-      </div>
-      <div class="score-track"><div class="score-fill paid" id="bar-paid"></div></div>
-    </div>
-    <div class="score-row">
-      <div class="score-row-header">
-        <span class="score-row-label">What the world needs</span>
-        <span class="score-row-pct" id="score-world">—</span>
-      </div>
-      <div class="score-track"><div class="score-fill world" id="bar-world"></div></div>
-    </div>
-  </div>
 
-  <div class="synthesis-section">
-    <h3>Your synthesis</h3>
-    <p class="synthesis-text" id="synthesis-text">Calculating your path...</p>
-  </div>
-
-  <div class="reflections-section">
-    <h3>Reflections by dimension</h3>
-    <div id="reflections-container"></div>
-  </div>
-
-  <div class="share-section">
-    <h3>Share your discovery</h3>
-    <p>Invite others to find their own Ikigai</p>
-    <textarea class="share-message" id="share-msg">I just discovered my Ikigai — the Japanese concept of finding your reason for being. Where what you love, what you're good at, what the world needs, and what you can be paid for converge. Try this reflection for yourself:</textarea>
-    <div class="share-buttons">
-      <button class="btn-share twitter"   onclick="shareOn('twitter')">Twitter / X</button>
-      <button class="btn-share linkedin"  onclick="shareOn('linkedin')">LinkedIn</button>
-      <button class="btn-share facebook"  onclick="shareOn('facebook')">Facebook</button>
-      <button class="btn-share instagram" onclick="shareOn('instagram')">Instagram</button>
-      <button class="btn-share tiktok"    onclick="shareOn('tiktok')">TikTok</button>
-      <button class="btn-share restart"   onclick="restartTest()">Start over</button>
-    </div>
-    <p class="share-note">Instagram &amp; TikTok don't support direct URL sharing — clicking will copy your message to clipboard so you can paste it into your post or story.</p>
-  </div>
+  </div><!-- /results-inner -->
 </div>
 
 <script>
@@ -998,7 +1047,7 @@ const QUESTIONS = [
   },
   {
     id: 13, area: 'L',
-    text: 'Do you lose track of time easily?',
+    text: 'When do you lose track of time most easily?',
     type: 'likert',
     label_low: 'Almost never — I\'m always aware of time', label_high: 'Regularly — hours vanish without notice'
   },
