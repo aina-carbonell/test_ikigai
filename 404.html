@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>404 — Ikigai</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #1a1714; --stone: #4a443e; --clay: #8b6f5e;
+      --rice: #f5f0e8; --fog: #c8c0b4;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--rice); color: var(--ink);
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      text-align: center; padding: 2rem;
+    }
+    .kanji {
+      font-family: serif; font-size: 6rem; color: var(--clay);
+      opacity: 0.15; display: block; margin-bottom: 1rem;
+    }
+    h1 {
+      font-family: 'Cormorant Garamond', serif; font-weight: 300; font-style: italic;
+      font-size: clamp(2rem, 5vw, 3.5rem); color: var(--ink); margin-bottom: 1rem;
+    }
+    p {
+      font-family: 'Cormorant Garamond', serif; font-size: 1.1rem;
+      color: var(--stone); line-height: 1.8; max-width: 420px; margin: 0 auto 2.5rem;
+    }
+    a {
+      display: inline-block; padding: 0.85rem 2.5rem;
+      background: var(--ink); color: var(--rice);
+      font-size: 0.8rem; letter-spacing: 0.22em; text-transform: uppercase;
+      text-decoration: none; transition: background 0.25s;
+    }
+    a:hover { background: var(--clay); }
+  </style>
+</head>
+<body>
+  <div>
+    <span class="kanji">迷</span>
+    <h1>You seem to have wandered</h1>
+    <p>This path doesn't exist — but perhaps getting lost is the first step toward finding where you truly belong.</p>
+    <a href="/">Return to the beginning</a>
+  </div>
+</body>
+</html>

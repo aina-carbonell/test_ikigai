@@ -1,0 +1,30 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Node (if anyone adds tooling)
+node_modules/
+npm-debug.log*
+package-lock.json
+
+# Local dev
+*.local
+.env
+
+# Build artefacts
+dist/
+build/
