@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ikigai — Discover Your Reason for Being</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    /* ===== CSS VARIABLES ===== */
+    :root {
+      --ink:        #1a1714;
+      --stone:      #4a443e;
+      --clay:       #8b6f5e;
+      --rice:       #f5f0e8;
+      --parchment:  #ede5d4;
+      --moss:       #6b7c5c;
+      --terracotta: #b05d3a;
+      --ochre:      #c49a3c;
+      --fog:        #c8c0b4;
+      --shadow:     rgba(26,23,20,0.12);
+
+      --font-serif: 'Cormorant Garamond', Georgia, serif;
+      --font-sans:  'Zen Kaku Gothic New', sans-serif;
+
+      --love-color:  #b05d3a;
+      --good-color:  #c49a3c;
+      --paid-color:  #5b7a6e;
+      --world-color: #7a6e5b;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--rice);
+      color: var(--ink);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Subtle grain texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.5;
+    }
+
+    /* ===== SCREENS ===== */
+    .screen {
+      display: none;
+      min-height: 100vh;
+      animation: fadeIn 0.6s ease;
+    }
+    .screen.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== INTRO SCREEN ===== */
+    #intro {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 3rem 2rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .intro-deco {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .intro-deco::before {
+      content: '';
+      position: absolute;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      border: 1px solid rgba(139,111,94,0.15);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .intro-deco::after {
+      content: '';
+      position: absolute;
+      width: 700px; height: 700px;
+      border-radius: 50%;
+      border: 1px solid rgba(139,111,94,0.08);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .kanji {
+      font-family: serif;
+      font-size: clamp(4rem, 12vw, 8rem);
+      color: var(--clay);
+      opacity: 0.18;
+      letter-spacing: 0.2em;
+      margin-bottom: 1rem;
+      line-height: 1;
+    }
+
+    .intro h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(2.4rem, 6vw, 4.5rem);
+      font-weight: 300;
+      letter-spacing: 0.04em;
+      color: var(--ink);
+      margin-bottom: 0.5rem;
+      line-height: 1.1;
+    }
+
+    .intro h1 em {
+      font-style: italic;
+      color: var(--clay);
+    }
+
+    .intro-subtitle {
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--fog);
+      margin-bottom: 2.5rem;
+    }
+
+    .intro-desc {
+      max-width: 560px;
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+      line-height: 1.9;
+      color: var(--stone);
+      margin-bottom: 3rem;
+    }
+
+    .four-circles {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 3rem;
+    }
+
+    .circle-tag {
+      padding: 0.4rem 1.1rem;
+      border-radius: 50px;
+      font-size: 0.78rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-family: var(--font-sans);
+    }
+    .circle-tag.love  { background: rgba(176,93,58,0.1);  color: var(--terracotta); border: 1px solid rgba(176,93,58,0.2); }
+    .circle-tag.good  { background: rgba(196,154,60,0.1); color: var(--ochre);      border: 1px solid rgba(196,154,60,0.2); }
+    .circle-tag.paid  { background: rgba(91,122,110,0.1); color: var(--moss);       border: 1px solid rgba(91,122,110,0.2); }
+    .circle-tag.world { background: rgba(122,110,91,0.1); color: var(--world-color); border: 1px solid rgba(122,110,91,0.2); }
+
+    .btn-primary {
+      display: inline-block;
+      padding: 1rem 3rem;
+      background: var(--ink);
+      color: var(--rice);
+      font-family: var(--font-sans);
+      font-size: 0.82rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-primary::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--clay);
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+    }
+    .btn-primary:hover::after { transform: translateX(0); }
+    .btn-primary span { position: relative; z-index: 1; }
+
+    .intro-note {
+      margin-top: 2rem;
+      font-size: 0.78rem;
+      color: var(--fog);
+      letter-spacing: 0.1em;
+    }
+
+    /* ===== TEST SCREEN ===== */
+    #test { padding: 0; }
+
+    .test-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--rice);
+      border-bottom: 1px solid rgba(139,111,94,0.15);
+      padding: 1.2rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .test-logo {
+      font-family: var(--font-serif);
+      font-size: 1.2rem;
+      font-weight: 300;
+      color: var(--stone);
+      letter-spacing: 0.05em;
+    }
+
+    .progress-wrap {
+      flex: 1;
+      max-width: 300px;
+    }
+    .progress-label {
+      font-size: 0.72rem;
+      color: var(--fog);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+    .progress-bar-bg {
+      height: 2px;
+      background: rgba(139,111,94,0.2);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--clay), var(--terracotta));
+      transition: width 0.5s ease;
+      border-radius: 2px;
+    }
+
+    .test-body {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 4rem 2rem 6rem;
+    }
+
+    .question-card {
+      display: none;
+      animation: slideIn 0.45s ease;
+    }
+    .question-card.active { display: block; }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .q-area-tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--fog);
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.3rem;
+      border-bottom: 1px solid currentColor;
+    }
+
+    .q-number {
+      font-family: var(--font-serif);
+      font-size: 0.85rem;
+      color: var(--fog);
+      margin-bottom: 0.8rem;
+    }
+
+    .q-text {
+      font-family: var(--font-serif);
+      font-size: clamp(1.4rem, 3.5vw, 2rem);
+      font-weight: 300;
+      line-height: 1.5;
+      color: var(--ink);
+      margin-bottom: 2.5rem;
+    }
+
+    /* Multiple choice */
+    .options-grid {
+      display: grid;
+      gap: 0.8rem;
+    }
+
+    .option-btn {
+      display: block;
+      width: 100%;
+      padding: 1rem 1.4rem;
+      text-align: left;
+      background: transparent;
+      border: 1px solid rgba(139,111,94,0.25);
+      color: var(--stone);
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      line-height: 1.5;
+    }
+    .option-btn:hover {
+      border-color: var(--clay);
+      background: rgba(139,111,94,0.05);
+      color: var(--ink);
+    }
+    .option-btn.selected {
+      border-color: var(--clay);
+      background: rgba(139,111,94,0.1);
+      color: var(--ink);
+    }
+    .option-btn.selected::before {
+      content: '— ';
+      color: var(--clay);
+    }
+
+    /* Likert */
+    .likert-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .likert-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--fog);
+      letter-spacing: 0.08em;
+    }
+    .likert-scale {
+      display: flex;
+      gap: 0.6rem;
+      justify-content: center;
+    }
+    .likert-btn {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      border: 1px solid rgba(139,111,94,0.3);
+      background: transparent;
+      color: var(--stone);
+      font-family: var(--font-serif);
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .likert-btn:hover {
+      border-color: var(--clay);
+      background: rgba(139,111,94,0.08);
+    }
+    .likert-btn.selected {
+      background: var(--clay);
+      border-color: var(--clay);
+      color: var(--rice);
+    }
+
+    /* Emoji/image selection */
+    .emoji-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 1rem;
+    }
+
+    .emoji-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 1.4rem 1rem;
+      border: 1px solid rgba(139,111,94,0.25);
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      color: var(--stone);
+      font-family: var(--font-serif);
+      font-size: 0.9rem;
+      line-height: 1.3;
+      text-align: center;
+    }
+    .emoji-btn .emoji-icon { font-size: 2.2rem; line-height: 1; }
+    .emoji-btn:hover {
+      border-color: var(--clay);
+      background: rgba(139,111,94,0.05);
+    }
+    .emoji-btn.selected {
+      border-color: var(--clay);
+      background: rgba(139,111,94,0.1);
+      color: var(--ink);
+    }
+
+    /* Navigation */
+    .q-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(139,111,94,0.15);
+    }
+    .btn-nav {
+      padding: 0.75rem 2rem;
+      border: 1px solid var(--stone);
+      background: transparent;
+      color: var(--stone);
+      font-family: var(--font-sans);
+      font-size: 0.78rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    .btn-nav:hover { background: var(--ink); color: var(--rice); border-color: var(--ink); }
+    .btn-nav:disabled { opacity: 0.3; cursor: not-allowed; }
+    .btn-nav.primary { background: var(--ink); color: var(--rice); border-color: var(--ink); }
+    .btn-nav.primary:hover { background: var(--clay); border-color: var(--clay); }
+
+    /* ===== RESULTS SCREEN ===== */
+    #results {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 4rem 2rem 6rem;
+    }
+
+    .results-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+    .results-header .kanji-sm {
+      font-family: serif;
+      font-size: 3rem;
+      color: var(--clay);
+      opacity: 0.3;
+      display: block;
+      margin-bottom: 1rem;
+    }
+    .results-header h2 {
+      font-family: var(--font-serif);
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 300;
+      color: var(--ink);
+      margin-bottom: 0.8rem;
+    }
+    .results-header p {
+      font-family: var(--font-serif);
+      font-size: 1.1rem;
+      color: var(--stone);
+      line-height: 1.8;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    /* Venn diagram */
+    .venn-section {
+      margin-bottom: 4rem;
+    }
+
+    .venn-container {
+      position: relative;
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      aspect-ratio: 1;
+    }
+
+    #venn-svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .venn-circle {
+      cursor: pointer;
+      transition: opacity 0.3s ease;
+    }
+    .venn-circle:hover { opacity: 0.85; }
+    .venn-circle.highlighted { opacity: 1; }
+    .venn-circle.dimmed { opacity: 0.3; }
+
+    .venn-label {
+      font-family: var(--font-sans);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      cursor: pointer;
+      fill: var(--stone);
+    }
+
+    .venn-center-label {
+      font-family: var(--font-serif);
+      font-size: 14px;
+      font-style: italic;
+      fill: var(--ink);
+      cursor: pointer;
+    }
+
+    .venn-tooltip {
+      background: var(--ink);
+      color: var(--rice);
+      padding: 1.2rem 1.5rem;
+      max-width: 320px;
+      font-family: var(--font-serif);
+      font-size: 0.95rem;
+      line-height: 1.7;
+      margin: 1.5rem auto 0;
+      display: none;
+      position: relative;
+      text-align: left;
+    }
+    .venn-tooltip::before {
+      content: attr(data-area);
+      display: block;
+      font-family: var(--font-sans);
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--clay);
+      margin-bottom: 0.5rem;
+    }
+    .venn-tooltip.show { display: block; animation: fadeIn 0.3s ease; }
+
+    /* Score bars */
+    .scores-section {
+      margin-bottom: 4rem;
+    }
+    .scores-section h3 {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      font-weight: 300;
+      color: var(--ink);
+      margin-bottom: 2rem;
+      letter-spacing: 0.02em;
+    }
+
+    .score-row {
+      margin-bottom: 1.8rem;
+    }
+    .score-row-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.5rem;
+    }
+    .score-row-label {
+      font-family: var(--font-sans);
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--stone);
+    }
+    .score-row-pct {
+      font-family: var(--font-serif);
+      font-size: 1.1rem;
+      color: var(--ink);
+    }
+    .score-track {
+      height: 3px;
+      background: rgba(139,111,94,0.15);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .score-fill {
+      height: 100%;
+      border-radius: 3px;
+      width: 0;
+      transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .score-fill.love  { background: var(--terracotta); }
+    .score-fill.good  { background: var(--ochre); }
+    .score-fill.paid  { background: var(--moss); }
+    .score-fill.world { background: var(--world-color); }
+
+    /* Synthesis */
+    .synthesis-section {
+      background: var(--parchment);
+      padding: 2.5rem;
+      margin-bottom: 4rem;
+      border-left: 3px solid var(--clay);
+    }
+    .synthesis-section h3 {
+      font-family: var(--font-serif);
+      font-size: 1.3rem;
+      font-weight: 400;
+      font-style: italic;
+      color: var(--clay);
+      margin-bottom: 1rem;
+    }
+    .synthesis-text {
+      font-family: var(--font-serif);
+      font-size: 1.05rem;
+      line-height: 1.9;
+      color: var(--stone);
+    }
+
+    /* Reflections */
+    .reflections-section {
+      margin-bottom: 4rem;
+    }
+    .reflections-section h3 {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      font-weight: 300;
+      color: var(--ink);
+      margin-bottom: 2rem;
+    }
+    .reflection-card {
+      padding: 1.8rem 2rem;
+      border: 1px solid rgba(139,111,94,0.2);
+      margin-bottom: 1.2rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .reflection-card:hover { border-color: var(--clay); }
+    .reflection-card h4 {
+      font-family: var(--font-sans);
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 0.7rem;
+    }
+    .reflection-card h4.love-title  { color: var(--terracotta); }
+    .reflection-card h4.good-title  { color: var(--ochre); }
+    .reflection-card h4.paid-title  { color: var(--moss); }
+    .reflection-card h4.world-title { color: var(--world-color); }
+    .reflection-card p {
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      line-height: 1.75;
+      color: var(--stone);
+    }
+
+    /* Share section */
+    .share-section {
+      text-align: center;
+      padding: 3rem 0;
+      border-top: 1px solid rgba(139,111,94,0.15);
+    }
+    .share-section h3 {
+      font-family: var(--font-serif);
+      font-size: 1.4rem;
+      font-weight: 300;
+      color: var(--ink);
+      margin-bottom: 0.5rem;
+    }
+    .share-section p {
+      font-family: var(--font-serif);
+      font-size: 0.95rem;
+      color: var(--fog);
+      margin-bottom: 2rem;
+    }
+
+    .share-message {
+      width: 100%;
+      max-width: 500px;
+      padding: 1rem;
+      border: 1px solid rgba(139,111,94,0.3);
+      background: transparent;
+      font-family: var(--font-serif);
+      font-size: 0.95rem;
+      color: var(--stone);
+      resize: vertical;
+      min-height: 80px;
+      margin-bottom: 1.5rem;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .share-message:focus { outline: none; border-color: var(--clay); }
+
+    .share-buttons {
+      display: flex;
+      gap: 0.8rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-share {
+      padding: 0.7rem 1.6rem;
+      border: 1px solid;
+      background: transparent;
+      font-family: var(--font-sans);
+      font-size: 0.75rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-share.twitter  { border-color: #1da1f2; color: #1da1f2; }
+    .btn-share.twitter:hover  { background: #1da1f2; color: white; }
+    .btn-share.linkedin { border-color: #0077b5; color: #0077b5; }
+    .btn-share.linkedin:hover { background: #0077b5; color: white; }
+    .btn-share.facebook { border-color: #1877f2; color: #1877f2; }
+    .btn-share.facebook:hover { background: #1877f2; color: white; }
+    .btn-share.restart  { border-color: var(--stone); color: var(--stone); }
+    .btn-share.restart:hover  { background: var(--ink); color: var(--rice); border-color: var(--ink); }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 600px) {
+      .test-header { padding: 1rem; }
+      .progress-wrap { display: none; }
+      .likert-scale { gap: 0.4rem; }
+      .likert-btn { width: 44px; height: 44px; font-size: 1rem; }
+      .emoji-grid { grid-template-columns: repeat(2, 1fr); }
+      .results-header { margin-bottom: 2.5rem; }
+      #results { padding: 2.5rem 1.2rem 4rem; }
+      .synthesis-section { padding: 1.8rem 1.4rem; }
+      .reflection-card { padding: 1.4rem; }
+    }
+
+    /* Loading / saved indicator */
+    .saved-indicator {
+      font-size: 0.7rem;
+      color: var(--fog);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .saved-indicator.show { opacity: 1; }
+  </style>
+</head>
+<body>
+
+<!-- ===== INTRO SCREEN ===== -->
+<div id="intro" class="screen active">
+  <div class="intro-deco"></div>
+  <div class="kanji">生き甲斐</div>
+  <h1>Your <em>Ikigai</em></h1>
+  <p class="intro-subtitle">A reflection on your reason for being</p>
+  <p class="intro-desc">
+    Ikigai — the Japanese art of finding your reason to rise each morning.
+    This contemplative journey of 20 questions will help you discover
+    where your deepest passions, natural gifts, livelihood, and purpose for the world quietly converge.
+  </p>
+  <div class="four-circles">
+    <span class="circle-tag love">What you love</span>
+    <span class="circle-tag good">What you're good at</span>
+    <span class="circle-tag paid">What pays you</span>
+    <span class="circle-tag world">What the world needs</span>
+  </div>
+  <button class="btn-primary" onclick="startTest()">
+    <span>Begin the journey</span>
+  </button>
+  <p class="intro-note">~10 minutes · Your answers are saved locally</p>
+</div>
+
+<!-- ===== TEST SCREEN ===== -->
+<div id="test" class="screen">
+  <header class="test-header">
+    <div class="test-logo">Ikigai</div>
+    <div class="progress-wrap">
+      <div class="progress-label">Question <span id="q-current">1</span> of <span id="q-total">20</span></div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+    <div class="saved-indicator" id="saved-indicator">Saved</div>
+  </header>
+  <div class="test-body" id="questions-container">
+    <!-- Questions injected by JS -->
+  </div>
+</div>
+
+<!-- ===== RESULTS SCREEN ===== -->
+<div id="results" class="screen">
+  <div class="results-header">
+    <span class="kanji-sm">生き甲斐</span>
+    <h2>Your Ikigai Portrait</h2>
+    <p id="results-intro-text">Where your four circles meet, your reason for being quietly waits.</p>
+  </div>
+
+  <div class="venn-section">
+    <div class="venn-container">
+      <svg id="venn-svg" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+        <!-- Circles rendered by JS -->
+      </svg>
+    </div>
+    <div class="venn-tooltip" id="venn-tooltip" data-area=""></div>
+  </div>
+
+  <div class="scores-section">
+    <h3>Your Four Dimensions</h3>
+    <div class="score-row">
+      <div class="score-row-header">
+        <span class="score-row-label">What you love</span>
+        <span class="score-row-pct" id="score-love">—</span>
+      </div>
+      <div class="score-track"><div class="score-fill love" id="bar-love"></div></div>
+    </div>
+    <div class="score-row">
+      <div class="score-row-header">
+        <span class="score-row-label">What you're good at</span>
+        <span class="score-row-pct" id="score-good">—</span>
+      </div>
+      <div class="score-track"><div class="score-fill good" id="bar-good"></div></div>
+    </div>
+    <div class="score-row">
+      <div class="score-row-header">
+        <span class="score-row-label">What you can be paid for</span>
+        <span class="score-row-pct" id="score-paid">—</span>
+      </div>
+      <div class="score-track"><div class="score-fill paid" id="bar-paid"></div></div>
+    </div>
+    <div class="score-row">
+      <div class="score-row-header">
+        <span class="score-row-label">What the world needs</span>
+        <span class="score-row-pct" id="score-world">—</span>
+      </div>
+      <div class="score-track"><div class="score-fill world" id="bar-world"></div></div>
+    </div>
+  </div>
+
+  <div class="synthesis-section">
+    <h3>Your synthesis</h3>
+    <p class="synthesis-text" id="synthesis-text">Calculating your path...</p>
+  </div>
+
+  <div class="reflections-section">
+    <h3>Reflections by dimension</h3>
+    <div id="reflections-container"></div>
+  </div>
+
+  <div class="share-section">
+    <h3>Share your discovery</h3>
+    <p>Invite others to find their own Ikigai</p>
+    <textarea class="share-message" id="share-msg">I just discovered my Ikigai — the Japanese concept of finding your reason for being. Where what you love, what you're good at, what the world needs, and what you can be paid for converge. Try this reflection for yourself:</textarea>
+    <div class="share-buttons">
+      <button class="btn-share twitter"  onclick="shareOn('twitter')">Twitter / X</button>
+      <button class="btn-share linkedin" onclick="shareOn('linkedin')">LinkedIn</button>
+      <button class="btn-share facebook" onclick="shareOn('facebook')">Facebook</button>
+      <button class="btn-share restart"  onclick="restartTest()">Start over</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   IKIGAI TEST — Core JavaScript
+   ============================================================ */
+
+// ---- QUESTION DATA ----
+// Areas: L=Love, G=Good, P=Paid, W=World
+// Types: mc=multiple choice, likert, emoji
+
+const QUESTIONS = [
+  {
+    id: 1, area: 'L',
+    text: 'On a free afternoon with no obligations, what pulls you in without effort?',
+    type: 'mc',
+    options: [
+      { text: 'Creating something with my hands — drawing, building, cooking', value: 4 },
+      { text: 'Diving deep into a topic that captivates me', value: 3 },
+      { text: 'Spending time with people who matter to me', value: 2 },
+      { text: 'Moving my body — sports, dance, walking in nature', value: 1 },
+    ]
+  },
+  {
+    id: 2, area: 'G',
+    text: 'When a complex problem arises in a group, what role do you naturally slip into?',
+    type: 'mc',
+    options: [
+      { text: 'The analyst — I break it down and find the root cause', value: 4 },
+      { text: 'The connector — I bring the right people and ideas together', value: 3 },
+      { text: 'The communicator — I translate complexity into clarity', value: 2 },
+      { text: 'The executor — I focus on what needs to be done right now', value: 1 },
+    ]
+  },
+  {
+    id: 3, area: 'W',
+    text: 'If you could witness one shift in the world before you die, it would be…',
+    type: 'emoji',
+    options: [
+      { icon: '🌱', label: 'A healed relationship between humans and nature', value: 4 },
+      { icon: '🤝', label: 'Deeper solidarity across cultures and generations', value: 3 },
+      { icon: '💡', label: 'Knowledge and creativity accessible to all', value: 2 },
+      { icon: '⚖️', label: 'Systems that distribute opportunity more fairly', value: 1 },
+    ]
+  },
+  {
+    id: 4, area: 'P',
+    text: 'How strongly does this resonate: "I believe my skills and knowledge have tangible value others would pay for."',
+    type: 'likert',
+    label_low: 'Not at all', label_high: 'Completely'
+  },
+  {
+    id: 5, area: 'L',
+    text: 'What kind of book would you read purely for pleasure, without anyone asking you to?',
+    type: 'mc',
+    options: [
+      { text: 'A story about human relationships, memory, or identity', value: 4 },
+      { text: 'A deep exploration of science, philosophy, or history', value: 3 },
+      { text: 'A practical guide that teaches something useful', value: 2 },
+      { text: 'Poetry, essays, or anything where language itself is the art', value: 1 },
+    ]
+  },
+  {
+    id: 6, area: 'G',
+    text: 'Think of the last genuine compliment you received about a skill. How often does this quality come naturally to you?',
+    type: 'likert',
+    label_low: 'Rarely — it takes real effort', label_high: 'Almost always — it\'s just who I am'
+  },
+  {
+    id: 7, area: 'W',
+    text: 'When you encounter suffering or injustice, which reaction is most true for you?',
+    type: 'mc',
+    options: [
+      { text: 'I feel an urgent need to act — I can\'t just watch', value: 4 },
+      { text: 'I think about long-term systemic causes and solutions', value: 3 },
+      { text: 'I want to be there for the individuals who are affected', value: 2 },
+      { text: 'I look for ways to document, raise awareness, or educate', value: 1 },
+    ]
+  },
+  {
+    id: 8, area: 'P',
+    text: 'Which statement feels closest to your current relationship with work and income?',
+    type: 'mc',
+    options: [
+      { text: 'I\'m building something I believe in, and income follows', value: 4 },
+      { text: 'I\'m well-compensated but feel my real gifts aren\'t being used', value: 3 },
+      { text: 'I do what I love but struggle with the financial side', value: 2 },
+      { text: 'I\'m still searching for the intersection of purpose and livelihood', value: 1 },
+    ]
+  },
+  {
+    id: 9, area: 'L',
+    text: 'Which of these sensory environments makes you feel most alive?',
+    type: 'emoji',
+    options: [
+      { icon: '🌊', label: 'Vastness — ocean, mountains, open sky', value: 4 },
+      { icon: '🏙️', label: 'Intensity — city energy, crowds, noise', value: 3 },
+      { icon: '🌿', label: 'Quiet — forest, silence, solitude', value: 2 },
+      { icon: '🕯️', label: 'Intimacy — a warm room, close conversation', value: 1 },
+    ]
+  },
+  {
+    id: 10, area: 'G',
+    text: 'When you look back at past projects or work, what thread runs through your best contributions?',
+    type: 'mc',
+    options: [
+      { text: 'I brought structure and clarity to chaos', value: 4 },
+      { text: 'I inspired or motivated others to go further', value: 3 },
+      { text: 'I created something original that hadn\'t existed before', value: 2 },
+      { text: 'I solved a stubborn problem others had given up on', value: 1 },
+    ]
+  },
+  {
+    id: 11, area: 'W',
+    text: 'How strongly do you agree: "When I help or contribute to something larger than myself, I feel more whole."',
+    type: 'likert',
+    label_low: 'Disagree', label_high: 'Strongly agree'
+  },
+  {
+    id: 12, area: 'P',
+    text: 'Imagine someone offers to pay you generously to do your favourite thing. Your first instinct is…',
+    type: 'mc',
+    options: [
+      { text: 'Excitement — I\'d finally be rewarded for what I\'m best at', value: 4 },
+      { text: 'Caution — money might change why I do it', value: 3 },
+      { text: 'Curiosity — I wonder if I could maintain the quality', value: 2 },
+      { text: 'Disbelief — I never thought anyone would pay for this', value: 1 },
+    ]
+  },
+  {
+    id: 13, area: 'L',
+    text: 'When do you lose track of time most easily?',
+    type: 'likert',
+    label_low: 'Almost never — I\'m always aware of time', label_high: 'Regularly — hours vanish without notice'
+  },
+  {
+    id: 14, area: 'G',
+    text: 'A friend asks what they should come to you for when they\'re stuck. What would others say, honestly?',
+    type: 'emoji',
+    options: [
+      { icon: '🧩', label: 'Solving complex or unusual problems', value: 4 },
+      { icon: '💬', label: 'Listening, empathy, emotional clarity', value: 3 },
+      { icon: '🎨', label: 'Creative ideas and fresh perspectives', value: 2 },
+      { icon: '📐', label: 'Precision, planning, and reliable execution', value: 1 },
+    ]
+  },
+  {
+    id: 15, area: 'W',
+    text: 'Which of these concerns keeps you up at night most often?',
+    type: 'mc',
+    options: [
+      { text: 'Environmental collapse and the future of the planet', value: 4 },
+      { text: 'Social division, inequality, and lack of empathy', value: 3 },
+      { text: 'The erosion of truth, beauty, or human meaning', value: 2 },
+      { text: 'Mental health crises and the loneliness epidemic', value: 1 },
+    ]
+  },
+  {
+    id: 16, area: 'P',
+    text: 'How comfortable are you proposing your own price or rate for something you\'ve created or can do?',
+    type: 'likert',
+    label_low: 'Very uncomfortable — I undercharge or don\'t ask', label_high: 'Confident — I know my value'
+  },
+  {
+    id: 17, area: 'L',
+    text: 'Which creative act feels most like breathing to you?',
+    type: 'emoji',
+    options: [
+      { icon: '✍️', label: 'Writing — ideas, stories, or reflections', value: 4 },
+      { icon: '🎵', label: 'Music — composing, playing, or listening deeply', value: 3 },
+      { icon: '🔧', label: 'Making — building, designing, crafting', value: 2 },
+      { icon: '🗣️', label: 'Talking — conversations, storytelling, teaching', value: 1 },
+    ]
+  },
+  {
+    id: 18, area: 'G',
+    text: 'How strongly do you feel this: "I have accumulated real mastery in at least one domain others recognise."',
+    type: 'likert',
+    label_low: 'Not yet', label_high: 'Without a doubt'
+  },
+  {
+    id: 19, area: 'W',
+    text: 'At its best, what role could your work play for others?',
+    type: 'mc',
+    options: [
+      { text: 'Healing — restoring health, hope, or wholeness', value: 4 },
+      { text: 'Teaching — expanding what people know or can imagine', value: 3 },
+      { text: 'Building — creating systems or tools that last', value: 2 },
+      { text: 'Connecting — bridging what has been separated', value: 1 },
+    ]
+  },
+  {
+    id: 20, area: 'P',
+    text: 'How close do you feel to a work life where you are paid fairly to do what you are genuinely good at?',
+    type: 'likert',
+    label_low: 'Very far — it feels like a dream', label_high: 'Very close — I\'m almost there'
+  },
+];
+
+// ---- STATE ----
+let answers = {};
+let currentQ = 0;
+
+const STORAGE_KEY = 'ikigai_test_v2';
+
+// ---- INIT ----
+function init() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    try {
+      const data = JSON.parse(saved);
+      answers = data.answers || {};
+      currentQ = data.currentQ || 0;
+      if (Object.keys(answers).length > 0 && currentQ < QUESTIONS.length) {
+        if (confirm('You have a saved session. Continue where you left off?')) {
+          buildQuestions();
+          showScreen('test');
+          renderQuestion(currentQ);
+          return;
+        } else {
+          clearSaved();
+        }
+      } else if (currentQ >= QUESTIONS.length) {
+        // Completed — show results
+        buildQuestions();
+        showScreen('results');
+        showResults();
+        return;
+      }
+    } catch(e) { clearSaved(); }
+  }
+  showScreen('intro');
+}
+
+function clearSaved() {
+  localStorage.removeItem(STORAGE_KEY);
+  answers = {};
+  currentQ = 0;
+}
+
+function saveProgress() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ answers, currentQ }));
+  const ind = document.getElementById('saved-indicator');
+  ind.classList.add('show');
+  setTimeout(() => ind.classList.remove('show'), 1500);
+}
+
+// ---- SCREENS ----
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ---- BUILD QUESTIONS ----
+function buildQuestions() {
+  const container = document.getElementById('questions-container');
+  container.innerHTML = '';
+  document.getElementById('q-total').textContent = QUESTIONS.length;
+
+  QUESTIONS.forEach((q, idx) => {
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = `q-card-${idx}`;
+
+    const areaNames = { L: 'Dimension: What you love', G: 'Dimension: What you\'re good at', P: 'Dimension: What pays you', W: 'Dimension: What the world needs' };
+
+    let answersHTML = '';
+    if (q.type === 'mc') {
+      answersHTML = `<div class="options-grid">` +
+        q.options.map((opt, i) =>
+          `<button class="option-btn" onclick="selectMC(${idx}, ${opt.value}, this)">${opt.text}</button>`
+        ).join('') + `</div>`;
+    } else if (q.type === 'likert') {
+      answersHTML = `<div class="likert-wrap">
+        <div class="likert-scale">
+          ${[1,2,3,4,5].map(n =>
+            `<button class="likert-btn" onclick="selectLikert(${idx}, ${n}, this)">${n}</button>`
+          ).join('')}
+        </div>
+        <div class="likert-labels">
+          <span>${q.label_low}</span>
+          <span>${q.label_high}</span>
+        </div>
+      </div>`;
+    } else if (q.type === 'emoji') {
+      answersHTML = `<div class="emoji-grid">` +
+        q.options.map(opt =>
+          `<button class="emoji-btn" onclick="selectEmoji(${idx}, ${opt.value}, this)">
+            <span class="emoji-icon">${opt.icon}</span>
+            <span>${opt.label}</span>
+          </button>`
+        ).join('') + `</div>`;
+    }
+
+    card.innerHTML = `
+      <div class="q-number">Question ${idx + 1} / ${QUESTIONS.length}</div>
+      <div class="q-text">${q.text}</div>
+      ${answersHTML}
+      <div class="q-nav">
+        <button class="btn-nav" onclick="prevQ()" ${idx === 0 ? 'disabled' : ''}>← Back</button>
+        <button class="btn-nav primary" id="next-btn-${idx}" onclick="nextQ(${idx})" disabled>
+          ${idx === QUESTIONS.length - 1 ? 'See my Ikigai →' : 'Continue →'}
+        </button>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+// ---- RENDER QUESTION ----
+function renderQuestion(idx) {
+  document.querySelectorAll('.question-card').forEach(c => c.classList.remove('active'));
+  const card = document.getElementById(`q-card-${idx}`);
+  card.classList.add('active');
+
+  document.getElementById('q-current').textContent = idx + 1;
+  const pct = ((idx) / QUESTIONS.length) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+
+  // Restore saved answer UI
+  if (answers[idx] !== undefined) {
+    const q = QUESTIONS[idx];
+    if (q.type === 'mc') {
+      const val = answers[idx];
+      card.querySelectorAll('.option-btn').forEach(btn => {
+        const bVal = parseInt(btn.getAttribute('onclick').match(/,\s*(\d+)/)[1]);
+        if (bVal === val) btn.classList.add('selected');
+      });
+    } else if (q.type === 'likert') {
+      const val = answers[idx];
+      card.querySelectorAll('.likert-btn').forEach((btn, i) => {
+        if (i + 1 === val) btn.classList.add('selected');
+      });
+    } else if (q.type === 'emoji') {
+      const val = answers[idx];
+      card.querySelectorAll('.emoji-btn').forEach(btn => {
+        const bVal = parseInt(btn.getAttribute('onclick').match(/,\s*(\d+)/)[1]);
+        if (bVal === val) btn.classList.add('selected');
+      });
+    }
+    document.getElementById(`next-btn-${idx}`).disabled = false;
+  }
+}
+
+// ---- SELECTION HANDLERS ----
+function selectMC(qIdx, value, el) {
+  el.closest('.options-grid').querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  answers[qIdx] = value;
+  document.getElementById(`next-btn-${qIdx}`).disabled = false;
+  saveProgress();
+}
+
+function selectLikert(qIdx, value, el) {
+  el.closest('.likert-scale').querySelectorAll('.likert-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  answers[qIdx] = value;
+  document.getElementById(`next-btn-${qIdx}`).disabled = false;
+  saveProgress();
+}
+
+function selectEmoji(qIdx, value, el) {
+  el.closest('.emoji-grid').querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  answers[qIdx] = value;
+  document.getElementById(`next-btn-${qIdx}`).disabled = false;
+  saveProgress();
+}
+
+// ---- NAVIGATION ----
+function startTest() {
+  buildQuestions();
+  showScreen('test');
+  renderQuestion(0);
+}
+
+function prevQ() {
+  if (currentQ > 0) {
+    currentQ--;
+    renderQuestion(currentQ);
+  }
+}
+
+function nextQ(idx) {
+  if (answers[idx] === undefined) return;
+  currentQ = idx + 1;
+  if (currentQ >= QUESTIONS.length) {
+    saveProgress();
+    showScreen('results');
+    showResults();
+  } else {
+    renderQuestion(currentQ);
+    saveProgress();
+  }
+}
+
+// ---- SCORE CALCULATION ----
+function calcScores() {
+  const raw = { L: [], G: [], P: [], W: [] };
+
+  QUESTIONS.forEach((q, idx) => {
+    const ans = answers[idx];
+    if (ans !== undefined) {
+      let normalised;
+      if (q.type === 'likert') {
+        // 1-5 → 0-1
+        normalised = (ans - 1) / 4;
+      } else {
+        // mc/emoji: values 1-4, higher = stronger signal
+        normalised = (ans - 1) / 3;
+      }
+      raw[q.area].push(normalised);
+    }
+  });
+
+  const avg = area => {
+    if (raw[area].length === 0) return 0;
+    return raw[area].reduce((a, b) => a + b, 0) / raw[area].length;
+  };
+
+  return {
+    L: avg('L'),
+    G: avg('G'),
+    P: avg('P'),
+    W: avg('W'),
+  };
+}
+
+// ---- RESULTS RENDERING ----
+function showResults() {
+  const scores = calcScores();
+
+  // Animate score bars
+  setTimeout(() => {
+    ['L','G','P','W'].forEach(a => {
+      const pct = Math.round(scores[a] * 100);
+      const key = { L:'love', G:'good', P:'paid', W:'world' }[a];
+      document.getElementById(`score-${key}`).textContent = pct + '%';
+      document.getElementById(`bar-${key}`).style.width = pct + '%';
+    });
+  }, 300);
+
+  // Build Venn SVG
+  buildVenn(scores);
+
+  // Synthesis text
+  generateSynthesis(scores);
+
+  // Reflection cards
+  generateReflections(scores);
+}
+
+// ---- VENN DIAGRAM ----
+function buildVenn(scores) {
+  const svg = document.getElementById('venn-svg');
+  svg.innerHTML = '';
+
+  const cx = 200, cy = 200, r = 110, offset = 55;
+
+  const circles = [
+    { id: 'circ-L', cx: cx - offset * 0.7, cy: cy - offset * 0.7, color: '#b05d3a', label: 'WHAT YOU LOVE', area: 'L', tx: cx - offset * 1.8, ty: cy - offset * 1.6 },
+    { id: 'circ-G', cx: cx + offset * 0.7, cy: cy - offset * 0.7, color: '#c49a3c', label: 'GOOD AT', area: 'G', tx: cx + offset * 1.2, ty: cy - offset * 1.6 },
+    { id: 'circ-P', cx: cx + offset * 0.7, cy: cy + offset * 0.7, color: '#5b7a6e', label: 'PAID FOR', area: 'P', tx: cx + offset * 1.2, ty: cy + offset * 1.8 },
+    { id: 'circ-W', cx: cx - offset * 0.7, cy: cy + offset * 0.7, color: '#7a6e5b', label: 'WORLD NEEDS', area: 'W', tx: cx - offset * 1.8, ty: cy + offset * 1.8 },
+  ];
+
+  circles.forEach(c => {
+    const opacity = 0.18 + scores[c.area] * 0.22;
+    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    circle.setAttribute('cx', c.cx);
+    circle.setAttribute('cy', c.cy);
+    circle.setAttribute('r', r);
+    circle.setAttribute('fill', c.color);
+    circle.setAttribute('fill-opacity', opacity);
+    circle.setAttribute('stroke', c.color);
+    circle.setAttribute('stroke-opacity', 0.4);
+    circle.setAttribute('stroke-width', 1);
+    circle.classList.add('venn-circle');
+    circle.setAttribute('data-area', c.area);
+    circle.addEventListener('click', () => showTooltip(c.area, scores));
+    svg.appendChild(circle);
+
+    // Label
+    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text.setAttribute('x', c.tx);
+    text.setAttribute('y', c.ty);
+    text.setAttribute('text-anchor', 'middle');
+    text.classList.add('venn-label');
+    text.textContent = c.label;
+    text.style.cursor = 'pointer';
+    text.addEventListener('click', () => showTooltip(c.area, scores));
+    svg.appendChild(text);
+  });
+
+  // Center
+  const center = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  center.setAttribute('cx', cx);
+  center.setAttribute('cy', cy);
+  center.setAttribute('r', 28);
+  center.setAttribute('fill', '#1a1714');
+  center.setAttribute('fill-opacity', 0.85);
+  center.classList.add('venn-circle');
+  center.setAttribute('data-area', 'ikigai');
+  center.addEventListener('click', () => showTooltip('ikigai', scores));
+  svg.appendChild(center);
+
+  const clabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  clabel.setAttribute('x', cx);
+  clabel.setAttribute('y', cy + 5);
+  clabel.setAttribute('text-anchor', 'middle');
+  clabel.classList.add('venn-center-label');
+  clabel.textContent = 'Ikigai';
+  clabel.style.fill = '#f5f0e8';
+  clabel.style.cursor = 'pointer';
+  clabel.addEventListener('click', () => showTooltip('ikigai', scores));
+  svg.appendChild(clabel);
+}
+
+function showTooltip(area, scores) {
+  const tooltip = document.getElementById('venn-tooltip');
+  const pct = area !== 'ikigai' ? Math.round(scores[area] * 100) : null;
+
+  const contents = {
+    L: {
+      title: 'What You Love',
+      text: getPassionText(scores.L)
+    },
+    G: {
+      title: 'What You\'re Good At',
+      text: getStrengthText(scores.G)
+    },
+    P: {
+      title: 'What You Can Be Paid For',
+      text: getProfessionText(scores.P)
+    },
+    W: {
+      title: 'What the World Needs',
+      text: getMissionText(scores.W)
+    },
+    ikigai: {
+      title: 'Your Ikigai',
+      text: getIkigaiText(scores)
+    }
+  };
+
+  const c = contents[area];
+  tooltip.setAttribute('data-area', c.title);
+  tooltip.textContent = c.text;
+  tooltip.classList.add('show');
+
+  document.querySelectorAll('.venn-circle').forEach(el => {
+    if (el.getAttribute('data-area') === area) {
+      el.classList.add('highlighted');
+      el.classList.remove('dimmed');
+    } else {
+      el.classList.remove('highlighted');
+      el.classList.add('dimmed');
+    }
+  });
+}
+
+// ---- PERSONALISED TEXT GENERATORS ----
+function getPassionText(score) {
+  if (score >= 0.75) return 'Passion runs deep in you. You have a vivid inner life and clear awareness of what captivates you — activities, ideas, or experiences that feel intrinsically meaningful. This is a strong foundation. The work ahead is not discovering what you love, but finding the courage to build around it.';
+  if (score >= 0.5) return 'You have genuine sources of joy and curiosity, though they may still be competing with duty or habit. You sense what moves you, even if you don\'t always follow it. Deepening your relationship with what genuinely excites you will be key.';
+  if (score >= 0.25) return 'There are sparks of passion waiting to be noticed. Life\'s demands may have covered them. The invitation here is simple: what did you love doing as a child, or imagine doing if nothing was in the way? That is worth exploring.';
+  return 'Passion can feel distant when survival takes priority, or when we\'ve been taught that work and joy don\'t mix. This is the area with the most room to grow — and often the most rewarding to explore with curiosity rather than pressure.';
+}
+
+function getStrengthText(score) {
+  if (score >= 0.75) return 'You carry a strong sense of your own competence and have likely accumulated real mastery. You know what you bring to a room, and others recognise it too. The opportunity is to match this strength with challenges worthy of it.';
+  if (score >= 0.5) return 'You have clear strengths that show up naturally, even if you sometimes underestimate them. Competence feels more effortful than it might — perhaps because you hold high standards. Others likely see your gifts more clearly than you do.';
+  if (score >= 0.25) return 'You\'re still mapping your strengths, or perhaps haven\'t yet had the space to develop them fully. Every mastery begins with curiosity. Look for the tasks where feedback comes most easily — that\'s often where talent lives.';
+  return 'Strength often hides beneath comparison or self-doubt. The question is less "what am I good at?" and more "what have I always done that others seem to struggle with?" The answers are usually quieter than we expect.';
+}
+
+function getProfessionText(score) {
+  if (score >= 0.75) return 'You have a healthy and confident relationship with the economic dimension of your work. You understand that value given deserves fair exchange, and you\'re moving toward or already living a sustainable model. This is a real asset.';
+  if (score >= 0.5) return 'You sense that what you offer has genuine market value, but the bridge between your gifts and stable income may still feel uncertain. This often points to an opportunity in how your value is communicated, rather than its actual worth.';
+  if (score >= 0.25) return 'The connection between your deeper abilities and what you\'re paid for is still being forged. This is very common — most people weren\'t taught to think of their gifts as livelihood. Naming your value is the first step.';
+  return 'Work and meaning feel disconnected right now. Economic survival may be consuming the space needed to explore. This is the most practical area to tend to — small steps toward alignment between what you do and what sustains you can unlock the rest.';
+}
+
+function getMissionText(score) {
+  if (score >= 0.75) return 'You carry a strong sense of being called toward something beyond yourself. You feel the weight of the world\'s needs and see your place in addressing them. This moral clarity is rare — and can be the most sustaining source of meaning when connected to real action.';
+  if (score >= 0.5) return 'You care genuinely about the world and think about your impact, even if it\'s not yet clear how your specific contribution fits in. You are moved by something larger than personal success. That orientation is a compass worth following.';
+  if (score >= 0.25) return 'A sense of mission is present but still forming. You may not have found the specific expression yet, or doubt whether your contribution is significant enough. Small acts of service often reveal the mission more clearly than grand visions.';
+  return 'A sense of larger purpose may feel abstract or even hollow right now. This is not a deficit — sometimes it means we haven\'t yet connected our daily life to what we truly value. This dimension grows quietly over time, often through relationships and small acts of care.';
+}
+
+function getIkigaiText(scores) {
+  const avg = (scores.L + scores.G + scores.P + scores.W) / 4;
+  const strongest = ['L','G','P','W'].sort((a,b) => scores[b] - scores[a])[0];
+  const names = { L: 'love', G: 'mastery', P: 'livelihood', W: 'mission' };
+
+  if (avg >= 0.65) return `Your four dimensions are well developed and in meaningful dialogue. You are close to — or already touching — your Ikigai. The intersection is not a destination but a practice: tend to each area and the centre grows. Your strongest anchor is your sense of ${names[strongest]}.`;
+  if (avg >= 0.45) return `You are in an active, alive process of aligning your four dimensions. Some are more developed than others — this is normal and even generative. Your clearest guide right now is your ${names[strongest]}. Let it lead, and the other areas will slowly converge.`;
+  return `Your Ikigai is not absent — it is emerging. You may be at a threshold moment, where old answers no longer fit and new ones haven\'t fully formed. This uncertainty is not emptiness; it is the soil in which deep purpose takes root. Start with what you know you love.`;
+}
+
+function generateSynthesis(scores) {
+  const avg = (scores.L + scores.G + scores.P + scores.W) / 4;
+  const sorted = ['L','G','P','W'].sort((a,b) => scores[b] - scores[a]);
+  const top = sorted[0], bottom = sorted[3];
+  const topNames = { L: 'passion', G: 'mastery', P: 'livelihood potential', W: 'sense of mission' };
+  const bottomNames = { L: 'your sense of what you truly enjoy', G: 'your confidence in your own abilities', P: 'the economic dimension of your work', W: 'your connection to a larger purpose' };
+
+  let text = '';
+  if (avg >= 0.65) {
+    text = `Your responses paint a picture of someone who has done real work — conscious or not — on understanding themselves. All four dimensions of Ikigai are present and reasonably integrated. You carry a strong ${topNames[top]}, and this energy could become the organising principle of a deeply meaningful vocation. The horizon ahead is less about discovery and more about deepening commitment.`;
+  } else if (avg >= 0.45) {
+    text = `You are genuinely in motion. Your ${topNames[top]} is a real resource — a thread you can follow even when other dimensions feel uncertain. The dimension that most invites your attention is ${bottomNames[bottom]}. Not as a deficiency, but as an open door: small, intentional steps in this area can shift the balance and bring your Ikigai into much sharper focus.`;
+  } else {
+    text = `You are at a beginning — and beginnings are not failures. Your responses suggest a person who is honest about where they are, which is the most important starting point. Your ${topNames[top]} is the area with the most energy; even modest attention here can unlock clarity elsewhere. Ikigai is not found in a moment; it emerges through consistent, gentle inquiry.`;
+  }
+
+  document.getElementById('synthesis-text').textContent = text;
+}
+
+function generateReflections(scores) {
+  const container = document.getElementById('reflections-container');
+  container.innerHTML = '';
+
+  const reflections = [
+    {
+      area: 'love', title: 'What You Love', colorClass: 'love-title',
+      text: getPassionText(scores.L)
+    },
+    {
+      area: 'good', title: 'What You\'re Good At', colorClass: 'good-title',
+      text: getStrengthText(scores.G)
+    },
+    {
+      area: 'paid', title: 'What You Can Be Paid For', colorClass: 'paid-title',
+      text: getProfessionText(scores.P)
+    },
+    {
+      area: 'world', title: 'What the World Needs', colorClass: 'world-title',
+      text: getMissionText(scores.W)
+    }
+  ];
+
+  reflections.forEach(r => {
+    const card = document.createElement('div');
+    card.className = 'reflection-card';
+    card.innerHTML = `<h4 class="${r.colorClass}">${r.title}</h4><p>${r.text}</p>`;
+    container.appendChild(card);
+  });
+}
+
+// ---- SHARE ----
+function shareOn(platform) {
+  const msg = encodeURIComponent(document.getElementById('share-msg').value);
+  const url = encodeURIComponent(window.location.href);
+  let link = '';
+
+  if (platform === 'twitter') {
+    link = `https://twitter.com/intent/tweet?text=${msg}&url=${url}`;
+  } else if (platform === 'linkedin') {
+    link = `https://www.linkedin.com/sharing/share-offsite/?url=${url}&summary=${msg}`;
+  } else if (platform === 'facebook') {
+    link = `https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${msg}`;
+  }
+
+  if (link) window.open(link, '_blank', 'noopener,noreferrer,width=600,height=500');
+}
+
+function restartTest() {
+  if (confirm('Start the test again from the beginning?')) {
+    clearSaved();
+    showScreen('intro');
+  }
+}
+
+// ---- RUN ----
+init();
+</script>
+</body>
+</html>
