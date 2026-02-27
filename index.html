@@ -56,13 +56,17 @@
     /* ===== SCREENS ===== */
     .screen {
       display: none;
-      min-height: 100vh;
-      animation: fadeIn 0.6s ease;
+      position: fixed;
+      inset: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      background-color: var(--rice);
+      animation: fadeIn 0.5s ease;
     }
     .screen.active { display: block; }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(12px); }
+      from { opacity: 0; transform: translateY(10px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
@@ -72,7 +76,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 100vh;
+      min-height: 100%;
       padding: 3rem 2rem;
       text-align: center;
       position: relative;
@@ -707,8 +711,23 @@
     .btn-share.linkedin:hover { background: #0077b5; color: white; }
     .btn-share.facebook { border-color: #1877f2; color: #1877f2; }
     .btn-share.facebook:hover { background: #1877f2; color: white; }
+    .btn-share.instagram { border-color: #c13584; color: #c13584; }
+    .btn-share.instagram:hover { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: white; border-color: #bc1888; }
+    .btn-share.tiktok { border-color: #010101; color: #010101; }
+    .btn-share.tiktok:hover { background: #010101; color: white; }
     .btn-share.restart  { border-color: var(--stone); color: var(--stone); }
     .btn-share.restart:hover  { background: var(--ink); color: var(--rice); border-color: var(--ink); }
+
+    .share-note {
+      margin-top: 1rem;
+      font-size: 0.75rem;
+      color: var(--fog);
+      font-family: var(--font-sans);
+      letter-spacing: 0.05em;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
 
     /* ===== RESPONSIVE ===== */
     @media (max-width: 600px) {
@@ -839,11 +858,14 @@
     <p>Invite others to find their own Ikigai</p>
     <textarea class="share-message" id="share-msg">I just discovered my Ikigai — the Japanese concept of finding your reason for being. Where what you love, what you're good at, what the world needs, and what you can be paid for converge. Try this reflection for yourself:</textarea>
     <div class="share-buttons">
-      <button class="btn-share twitter"  onclick="shareOn('twitter')">Twitter / X</button>
-      <button class="btn-share linkedin" onclick="shareOn('linkedin')">LinkedIn</button>
-      <button class="btn-share facebook" onclick="shareOn('facebook')">Facebook</button>
-      <button class="btn-share restart"  onclick="restartTest()">Start over</button>
+      <button class="btn-share twitter"   onclick="shareOn('twitter')">Twitter / X</button>
+      <button class="btn-share linkedin"  onclick="shareOn('linkedin')">LinkedIn</button>
+      <button class="btn-share facebook"  onclick="shareOn('facebook')">Facebook</button>
+      <button class="btn-share instagram" onclick="shareOn('instagram')">Instagram</button>
+      <button class="btn-share tiktok"    onclick="shareOn('tiktok')">TikTok</button>
+      <button class="btn-share restart"   onclick="restartTest()">Start over</button>
     </div>
+    <p class="share-note">Instagram &amp; TikTok don't support direct URL sharing — clicking will copy your message to clipboard so you can paste it into your post or story.</p>
   </div>
 </div>
 
@@ -976,7 +998,7 @@ const QUESTIONS = [
   },
   {
     id: 13, area: 'L',
-    text: 'When do you lose track of time most easily?',
+    text: 'Do you lose track of time easily?',
     type: 'likert',
     label_low: 'Almost never — I\'m always aware of time', label_high: 'Regularly — hours vanish without notice'
   },
@@ -1095,8 +1117,9 @@ function saveProgress() {
 // ---- SCREENS ----
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  window.scrollTo(0, 0);
+  const el = document.getElementById(id);
+  el.classList.add('active');
+  el.scrollTop = 0;
 }
 
 // ---- BUILD QUESTIONS ----
@@ -1498,19 +1521,48 @@ function generateReflections(scores) {
 
 // ---- SHARE ----
 function shareOn(platform) {
-  const msg = encodeURIComponent(document.getElementById('share-msg').value);
-  const url = encodeURIComponent(window.location.href);
+  const msg = document.getElementById('share-msg').value;
+  const url = window.location.href;
+  const encodedMsg = encodeURIComponent(msg);
+  const encodedUrl = encodeURIComponent(url);
   let link = '';
 
   if (platform === 'twitter') {
-    link = `https://twitter.com/intent/tweet?text=${msg}&url=${url}`;
-  } else if (platform === 'linkedin') {
-    link = `https://www.linkedin.com/sharing/share-offsite/?url=${url}&summary=${msg}`;
-  } else if (platform === 'facebook') {
-    link = `https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${msg}`;
-  }
+    link = `https://twitter.com/intent/tweet?text=${encodedMsg}&url=${encodedUrl}`;
+    window.open(link, '_blank', 'noopener,noreferrer,width=600,height=500');
 
-  if (link) window.open(link, '_blank', 'noopener,noreferrer,width=600,height=500');
+  } else if (platform === 'linkedin') {
+    link = `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}&summary=${encodedMsg}`;
+    window.open(link, '_blank', 'noopener,noreferrer,width=600,height=500');
+
+  } else if (platform === 'facebook') {
+    link = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedMsg}`;
+    window.open(link, '_blank', 'noopener,noreferrer,width=600,height=500');
+
+  } else if (platform === 'instagram' || platform === 'tiktok') {
+    // Instagram & TikTok don't support web intent URLs — copy to clipboard instead
+    const fullText = msg + '\n\n' + url;
+    navigator.clipboard.writeText(fullText).then(() => {
+      const btn = document.querySelector(`.btn-share.${platform}`);
+      const original = btn.textContent;
+      btn.textContent = '✓ Copied!';
+      btn.style.background = 'var(--moss)';
+      btn.style.color = 'white';
+      btn.style.borderColor = 'var(--moss)';
+      setTimeout(() => {
+        btn.textContent = original;
+        btn.style.background = '';
+        btn.style.color = '';
+        btn.style.borderColor = '';
+      }, 2200);
+    }).catch(() => {
+      // Fallback: select the textarea
+      const ta = document.getElementById('share-msg');
+      ta.select();
+      ta.setSelectionRange(0, 99999);
+      alert('Please copy the text manually (Ctrl+C / Cmd+C) and paste it into your ' + (platform === 'instagram' ? 'Instagram' : 'TikTok') + ' post or story.');
+    });
+  }
 }
 
 function restartTest() {
